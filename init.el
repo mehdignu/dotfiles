@@ -49,6 +49,22 @@
 (with-eval-after-load 'go-mode
   (define-key go-mode-map (kbd "C-c i") #'lsp-organize-imports))
 
+  ;; LSP documentation popup
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-doc-show-with-cursor nil)
+(setq lsp-ui-doc-delay 0.2)
+
+(with-eval-after-load 'lsp-mode
+  ;; hover docs
+  (define-key lsp-mode-map (kbd "C-c d") 'lsp-ui-doc-glance)
+  ;; detailed docs
+  (define-key lsp-mode-map (kbd "C-h .") 'lsp-describe-thing-at-point))
+
+;; disable old go-mode doc binding that requires godef
+(with-eval-after-load 'go-mode
+  (define-key go-mode-map (kbd "C-c C-d") nil))
+
+
 
 ;; Snippet support (required by LSP for many completions)
 (use-package yasnippet
