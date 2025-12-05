@@ -24,10 +24,37 @@
   :ensure t
   :hook (go-mode . lsp-deferred)
   :init
-  (setq lsp-prefer-flymake nil)         ;; use Flycheck instead of Flymake
+  (setq lsp-prefer-flymake nil)
   (setq lsp-diagnostics-provider :flycheck)
   (setq lsp-diagnostic-package :flycheck)
-  (setq lsp-idle-delay 0.2))            ;; real-time diagnostics (200ms)
+  (setq lsp-idle-delay 0.2)
+  (setq lsp-go-use-gofumpt t)
+  (setq lsp-go-build-flags ["-tags=integration"])
+  ;; auto-import support
+  (setq lsp-completion-enable-additional-text-edit t)
+  (setq lsp-go-import-on-save t)
+  :config
+  (setq lsp-go-analyses
+        '((unusedparams . t)
+          (shadow . t)))
+  (setq lsp-go-codelenses
+        '((gc_details . t)
+          (generate . t)
+          (regenerate_cgo . t)
+          (tidy . t)
+          (upgrade_dependency . t)
+          (vendor . t))))
+
+;; Manual import control keybinding
+(with-eval-after-load 'go-mode
+  (define-key go-mode-map (kbd "C-c i") #'lsp-organize-imports))
+
+
+;; Snippet support (required by LSP for many completions)
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
 
 (use-package flycheck
   :ensure t
@@ -69,11 +96,31 @@
   (load-theme 'doom-one t))
 
 
+;; git with magit
+(use-package magit
+  :ensure t
+  :commands (magit-status)
+  :bind (("C-x g" . magit-status)))
+
+
+
 ;; -------------------------
 ;; Custom
 ;; -------------------------
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(package-selected-packages nil))
 
-(custom-set-faces)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+
