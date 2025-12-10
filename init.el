@@ -11,6 +11,13 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+
 
 ;; -------------------------
 ;; Go Development Setup
@@ -119,6 +126,17 @@
   :bind (("C-x g" . magit-status)))
 
 
+;; set custom shell to be bash
+;;(setq explicit-shell-file-name "/bin/bash")
+;;(setq shell-file-name "bash")
+
+;; move better betwen windows
+(global-set-key (kbd "M-<left>") 'windmove-left)
+(global-set-key (kbd "M-<right>") 'windmove-right)
+(global-set-key (kbd "M-<up>") 'windmove-up)
+(global-set-key (kbd "M-<down>") 'windmove-down)
+
+
 
 ;; -------------------------
 ;; Custom
@@ -139,4 +157,85 @@
  )
 
 
+
+(pixel-scroll-precision-mode 1)
+
+(setq scroll-margin 3
+      scroll-step 1
+      scroll-conservatively 101
+      mouse-wheel-follow-mouse t
+      mouse-wheel-scroll-amount '(1))
+
+;; Add Real Project Awareness
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-project-search-path '("~/dev/" "~/src/"))
+  (setq projectile-completion-system 'auto)
+  :config
+  (projectile-mode 1)
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
+
+;; Add a Better Search Experience (ripgrep + consult)
+(use-package consult
+  :ensure t)
+
+(use-package consult-projectile
+  :after (consult projectile)
+  :ensure t)
+
+
+;; Install ripgrep externally: brew install ripgrep OR apt install ripgrep
+(global-set-key (kbd "C-c s") #'consult-ripgrep)
+
+;; Use project.el (built-in) NICELY with LSP
+(when (boundp 'project-vc-extra-root-markers)
+  (setq project-vc-extra-root-markers '("go.mod")))
+
+
+;; Treemacs for Project Browsing
+(use-package treemacs
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(global-set-key (kbd "C-c e") #'treemacs) ;; e = explorer
+(global-set-key (kbd "C-c t") #'go-test)
+
+
+;; Go-Specific Project Commands
+(defun go-run ()
+  (interactive)
+  (projectile-run-shell-command-in-root "go run ."))
+
+(defun go-test ()
+  (interactive)
+  (projectile-run-shell-command-in-root "go test ./..."))
+
+(defun go-build ()
+  (interactive)
+  (projectile-run-shell-command-in-root "go build ./..."))
+
+(global-set-key (kbd "C-c r") #'go-run)
+(global-set-key (kbd "C-c b") #'go-build)
+
+
+;; Add Smart Buffer + File Switching (Vertico + Orderless)
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless)))
+
+
+;; Improve LSP Performance for Big Projects
+(setq lsp-log-io nil)
+(setq lsp-completion-provider :none) ;; let company handle it
+(setq read-process-output-max (* 1024 1024)) ;; 1MB
 
