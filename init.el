@@ -18,6 +18,35 @@
 (setq use-package-always-ensure t)
 
 
+;; -------------------------
+;; YAML Editing Support
+;; -------------------------
+
+(use-package yaml-mode
+  :ensure t
+  :mode ("\\.yml\\'" "\\.yaml\\'"))
+
+
+;; -------------------------
+;; YAML LSP Support
+;; -------------------------
+
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(yaml-mode . "yaml"))
+
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("yaml-language-server" "--stdio"))
+    :major-modes '(yaml-mode)
+    :activation-fn (lsp-activate-on "yaml")
+    :server-id 'yaml-ls)))
+;; Kubernetes + Docker YAML Validation
+(with-eval-after-load 'lsp-yaml
+  (setq lsp-yaml-schemas
+        '((kubernetes . "/*.k8s.yaml")
+          ("https://json.schemastore.org/github-workflow.json" . "/.github/workflows/*"))))
+
+
 
 ;; -------------------------
 ;; Go Development Setup
@@ -102,6 +131,14 @@
   :config
   (setq company-idle-delay 0.0)
   (setq company-minimum-prefix-length 1))
+
+
+;; Protobuf Editing Support (Syntax, Indentation)
+(use-package protobuf-mode
+  :ensure t
+  :mode "\\.proto\\'"
+  :config
+  (setq protobuf-style 'google))
 
 
 ;; -------------------------
@@ -238,4 +275,24 @@
 (setq lsp-log-io nil)
 (setq lsp-completion-provider :none) ;; let company handle it
 (setq read-process-output-max (* 1024 1024)) ;; 1MB
+
+
+;; Protobuf LSP via buf
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(protobuf-mode . "proto"))
+
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("buf" "lsp"))
+    :activation-fn (lsp-activate-on "proto")
+    :server-id 'buf-lsp)))
+
+(add-hook 'protobuf-mode-hook #'lsp-deferred)
+
+;; Format proto on save
+(add-hook 'protobuf-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
+
+
 
