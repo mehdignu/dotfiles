@@ -103,6 +103,64 @@
 (global-set-key (kbd "M-<up>") 'windmove-up)
 (global-set-key (kbd "M-<down>") 'windmove-down)
 
+;; -------------------------
+;; Startup Dashboard
+;; -------------------------
+
+(use-package dashboard
+  :ensure t
+  :init
+  (setq dashboard-startup-banner 'official)
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts nil)
+
+  ;; Core content
+  (setq dashboard-items '((projects . 8)
+                           (recents  . 10)
+                           (bookmarks . 5)))
+
+  ;; Use Projectile for projects
+  (setq dashboard-projects-backend 'projectile)
+
+  :config
+  (dashboard-setup-startup-hook))
+
+(global-set-key (kbd "C-c C-p") #'consult-projectile-switch-project)
+
+
+(use-package recentf
+  :ensure nil
+  :init
+  (setq recentf-max-saved-items 200)
+  (setq recentf-save-file
+        (expand-file-name "recentf" user-emacs-directory))
+  :config
+  (recentf-mode 1))
+
+(global-set-key (kbd "C-c d") #'dashboard-open)
+(setq dashboard-projects-switch-function
+      #'projectile-switch-project-by-name)
+(setq treemacs-project-follow-cleanup t)
+
+(defun my/dashboard-goto-projects ()
+  "Move point to the Projects section in the dashboard."
+  (when (get-buffer "*dashboard*")
+    (with-current-buffer "*dashboard*"
+      (goto-char (point-min))
+      (when (search-forward "Projects" nil t)
+        (beginning-of-line)))))
+
+(add-hook 'dashboard-after-initialize-hook
+          #'my/dashboard-goto-projects)
+
+
+
+;; -------------------------
+;; Line Numbers (Global)
+;; -------------------------
+
+(global-display-line-numbers-mode 1)
+
 
 
 ;; -------------------------
