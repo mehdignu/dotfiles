@@ -33,14 +33,46 @@
   ;; Identify this major mode as Vue for LSP.
   (add-to-list 'lsp-language-id-configuration '(vue-web-mode . "vue")))
 
+(defun my/vue-collapse-blank-lines ()
+  "Collapse runs of 3+ blank lines down to a single blank line."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\n\\{3,\\}" nil t)
+      (replace-match "\n\n"))))
+
+(defvar my/vue-lsp-format-timeout 3
+  "Seconds to wait for LSP formatting during save. Keep low to avoid freezes.")
+
+(defun my/vue-lsp-format-buffer-safe ()
+  "Run `lsp-format-buffer' if available, with a short timeout to avoid freezing."
+  (when (and (bound-and-true-p lsp-mode)
+             (fboundp 'lsp-format-buffer)
+             (fboundp 'lsp-feature?)
+             (lsp-feature? "textDocument/formatting"))
+    (let ((lsp-response-timeout my/vue-lsp-format-timeout))
+      (ignore-errors
+        (lsp-format-buffer)))))
+
+(defun my/vue-before-save ()
+  "Vue save hook: clean blank lines, then LSP format (best effort)."
+  (when (derived-mode-p 'vue-web-mode)
+    (my/vue-collapse-blank-lines)
+    (my/vue-lsp-format-buffer-safe)))
+
 (defun my/vue-start-lsp ()
   "Start Volar + TS-LS for Vue buffers."
   (setq-local lsp-project-root-function #'my/vue-lsp-root)
-  ;; IMPORTANT: Volar expects to use ts-ls (default lsp-volar-typescript-server-id is ts-ls).
+  ;; Keep your working clients unchanged
   (setq-local lsp-enabled-clients '(vue-semantic-server ts-ls eslint))
   (lsp-deferred))
 
 (add-hook 'vue-web-mode-hook #'my/vue-start-lsp)
+
+;; Enable save formatting only after LSP actually manages the buffer.
+(add-hook 'lsp-managed-mode-hook
+          (lambda ()
+            (when (derived-mode-p 'vue-web-mode)
+              (add-hook 'before-save-hook #'my/vue-before-save nil t))))
 
 (provide 'init-vue)
 ;;; init-vue.el ends here
