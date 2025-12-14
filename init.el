@@ -21,6 +21,7 @@
 (setq use-package-always-ensure t)
 
 (require 'init-go)
+(require 'init-vue)
 
 ;; -------------------------
 ;; YAML Editing Support
@@ -195,7 +196,7 @@
 (use-package projectile
   :ensure t
   :init
-  (setq projectile-project-search-path '("~/dev/" "~/src/"))
+  (setq projectile-project-search-path '("~/dev/"))
   (setq projectile-completion-system 'auto)
   :config
   (projectile-mode 1)
