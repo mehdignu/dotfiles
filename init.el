@@ -98,6 +98,9 @@
   :commands (magit-status)
   :bind (("C-x g" . magit-status)))
 
+(use-package forge
+  :after magit
+  :ensure t)
 
 ;; move better betwen windows
 (global-set-key (kbd "M-<left>") 'windmove-left)
@@ -256,3 +259,6 @@
 
 (use-package flycheck
   :init (global-flycheck-mode))
+
+(menu-bar-mode -1)
+
