@@ -51,6 +51,38 @@
   (define-key go-mode-map (kbd "C-c C-d") nil))
 
 ;; -------------------------
+;; Protobuf (.proto) Support
+;; -------------------------
+
+(use-package protobuf-mode
+  :ensure t
+  :mode ("\\.proto\\'" . protobuf-mode))
+
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(protobuf-mode . "proto"))
+  (when (executable-find "buf")
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection '("buf" "lsp" "serve"))
+      :major-modes '(protobuf-mode)
+      :server-id 'buf-lsp))))
+
+(add-hook 'protobuf-mode-hook #'lsp-deferred)
+
+(defun my/proto-format-on-save ()
+  "Format current .proto buffer using buf format, if buf is installed."
+  (when (and buffer-file-name
+             (string-match-p "\\.proto\\'" buffer-file-name)
+             (executable-find "buf"))
+    (call-process "buf" nil "*buf-format*" nil "format" "-w" buffer-file-name)
+    (revert-buffer :ignore-auto :noconfirm)))
+
+(add-hook 'protobuf-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c i") #'lsp-organize-imports)
+            (add-hook 'before-save-hook #'my/proto-format-on-save nil t)))
+
+;; -------------------------
 ;; Go Project Commands
 ;; -------------------------
 
