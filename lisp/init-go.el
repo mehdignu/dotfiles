@@ -88,15 +88,24 @@
 
 (defun go-run ()
   (interactive)
-  (projectile-run-shell-command-in-root "go run ."))
+  (unless buffer-file-name
+    (user-error "Current buffer is not visiting a file"))
+  (let ((default-directory (file-name-directory buffer-file-name)))
+    (compile "go run .")))
 
 (defun go-test ()
   (interactive)
-  (projectile-run-shell-command-in-root "go test ./..."))
+  (unless buffer-file-name
+    (user-error "Current buffer is not visiting a file"))
+  (let ((default-directory (file-name-directory buffer-file-name)))
+    (compile "go test ./...")))
 
 (defun go-build ()
   (interactive)
-  (projectile-run-shell-command-in-root "go build ./..."))
+  (unless buffer-file-name
+    (user-error "Current buffer is not visiting a file"))
+  (let ((default-directory (file-name-directory buffer-file-name)))
+    (compile "go build ./...")))
 
 (global-set-key (kbd "C-c r") #'go-run)
 (global-set-key (kbd "C-c b") #'go-build)
