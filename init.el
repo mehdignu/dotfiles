@@ -21,6 +21,7 @@
 (setq use-package-always-ensure t)
 
 (require 'init-go)
+(require 'init-java)
 (require 'init-vue)
 
 ;; -------------------------
@@ -142,6 +143,13 @@
 (setq dashboard-projects-switch-function
       #'projectile-switch-project-by-name)
 (setq treemacs-project-follow-cleanup t)
+
+(defun my/treemacs-switch-project ()
+  "Show only the current Projectile project in Treemacs."
+  (treemacs-add-and-display-current-project-exclusively))
+
+(setq projectile-switch-project-action #'my/treemacs-switch-project)
+
 
 (defun my/dashboard-goto-projects ()
   "Move point to the Projects section in the dashboard."
