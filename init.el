@@ -21,8 +21,10 @@
 (setq use-package-always-ensure t)
 
 (require 'init-go)
+(require 'init-python)
 (require 'init-java)
 (require 'init-vue)
+(require 'init-docker)
 
 ;; -------------------------
 ;; YAML Editing Support
