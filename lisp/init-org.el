@@ -6,7 +6,9 @@
   :bind (("C-c a" . org-agenda)
          ("C-c c" . org-capture))
   :custom
+  ;; -------------------------
   ;; Basic editing / display
+  ;; -------------------------
   (org-startup-indented t)
   (org-hide-emphasis-markers t)
   (org-ellipsis " ▾")
@@ -14,16 +16,25 @@
   (org-startup-with-inline-images t)
   (org-image-actual-width '(300))
 
-  ;; Files 
+  ;; -------------------------
+  ;; Files & directories
+  ;; -------------------------
   (org-directory (expand-file-name "~/org/"))
   (org-default-notes-file (expand-file-name "inbox.org" org-directory))
-  (org-agenda-files (list org-directory))
 
+  ;; Include all org files for agenda
+  (org-agenda-files
+   (directory-files-recursively (expand-file-name "~/org/") "\\.org$"))
+
+  ;; -------------------------
   ;; Logging / workflow
+  ;; -------------------------
   (org-log-done 'time)
   (org-log-into-drawer t)
 
-  ;; Refile targets
+  ;; -------------------------
+  ;; Refile
+  ;; -------------------------
   (org-refile-use-outline-path 'file)
   (org-outline-path-complete-in-steps nil)
   (org-refile-targets '((org-agenda-files :maxlevel . 3)))
@@ -33,13 +44,20 @@
   (unless (file-directory-p org-directory)
     (make-directory org-directory t))
 
-  ;; Capture templates (minimal, practical defaults)
+  ;; -------------------------
+  ;; Capture templates
+  ;; -------------------------
   (setq org-capture-templates
         `(("t" "Todo" entry
            (file+headline ,(expand-file-name "inbox.org" org-directory) "Tasks")
            "* TODO %?\n  %U\n  %a\n")
+
           ("n" "Note" entry
-           (file+headline ,(expand-file-name "inbox.org" org-directory) "Notes")
+           (file+headline ,(expand-file-name "notes.org" org-directory) "Notes")
+           "* %?\n  %U\n  %a\n")
+
+          ("j" "Journal (daily)" entry
+           (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
            "* %?\n  %U\n  %a\n"))))
 
 (provide 'init-org)
