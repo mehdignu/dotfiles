@@ -123,9 +123,10 @@
   (setq dashboard-show-shortcuts nil)
 
   ;; Core content
-  (setq dashboard-items '((projects . 8)
-                           (recents  . 10)
-                           (bookmarks . 5)))
+ (setq dashboard-items '((agenda   . 10)
+                          (projects . 8)
+                          (recents  . 10)
+                          (bookmarks . 5)))
 
   ;; Use Projectile for projects
   (setq dashboard-projects-backend 'projectile)
