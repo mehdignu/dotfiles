@@ -25,6 +25,7 @@
 (require 'init-java)
 (require 'init-vue)
 (require 'init-docker)
+(require 'init-org)
 
 ;; -------------------------
 ;; YAML Editing Support
