@@ -96,7 +96,41 @@ This setup is optimized for Go, Python, Java, Vue (Vue 3), Docker, and YAML-heav
 - Kubernetes schema validation
 - GitHub Actions schema support
 
+
 ---
+
+## Org Mode (`init-org.el`)
+
+Org mode is used for **task management, scheduling, notes, and lightweight planning**, with a simple and predictable workflow.
+
+### Features
+- Built-in Org mode (no external dependency)
+- Centralized `~/org/` directory
+- Inbox-based capture workflow
+- Agenda-driven task management
+- Automatic timestamps when tasks are completed
+- Indented, clean visual style
+
+### Default Files
+- `~/org/inbox.org` — tasks and notes
+- `~/org/inbox.org_archive` — archived completed items
+
+### Key bindings
+- `C-c c` — capture (tasks / notes)
+- `C-c a` — agenda
+- `C-c C-t` — toggle TODO state
+- `C-c C-s` — schedule task
+- `C-c C-d` — set deadline
+- `C-c C-x C-a` — archive subtree
+
+### Typical Workflow
+- Capture tasks quickly with `C-c c`
+- Schedule work with `C-c C-s`
+- Review daily work in the agenda
+- Mark tasks DONE and archive when finished
+
+---
+
 
 ## Global Key Bindings
 
