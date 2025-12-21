@@ -123,10 +123,13 @@
   (setq dashboard-show-shortcuts nil)
 
   ;; Core content
- (setq dashboard-items '((agenda   . 10)
+  (setq dashboard-items '((agenda   . 10)
                           (projects . 8)
                           (recents  . 10)
                           (bookmarks . 5)))
+
+  ;; Show week agenda
+  (setq dashboard-week-agenda t)
 
   ;; Use Projectile for projects
   (setq dashboard-projects-backend 'projectile)
@@ -265,4 +268,16 @@
   :init (global-flycheck-mode))
 
 (menu-bar-mode -1)
+
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
+(global-set-key (kbd "C-c l") #'hs-toggle-hiding)
+(global-set-key (kbd "C-c h a")   #'hs-hide-all)
+(global-set-key (kbd "C-c h s")   #'hs-show-all)
+
+
+(setq hs-set-up-overlay
+      (lambda (ov)
+        (overlay-put ov 'display " … ")
+        (overlay-put ov 'face 'font-lock-comment-face)))
 
