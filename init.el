@@ -271,7 +271,7 @@
 
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
-(global-set-key (kbd "C-c l") #'hs-toggle-hiding)
+(global-set-key (kbd "C-c f") #'hs-toggle-hiding)
 (global-set-key (kbd "C-c h a")   #'hs-hide-all)
 (global-set-key (kbd "C-c h s")   #'hs-show-all)
 
