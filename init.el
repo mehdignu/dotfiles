@@ -1,3 +1,13 @@
+;;; init.el --- Emacs initialization file -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;; Main Emacs configuration.
+;; Sets up package management, language support, LSP integration,
+;; project management, UI enhancements, and quality-of-life defaults.
+
+;;; Code:
+
+
 ;; -------------------------
 ;; Package Setup
 ;; -------------------------
@@ -21,6 +31,7 @@
 (setq use-package-always-ensure t)
 
 (require 'init-go)
+(require 'init-postgres)
 (require 'init-python)
 (require 'init-java)
 (require 'init-vue)
@@ -281,3 +292,4 @@
         (overlay-put ov 'display " … ")
         (overlay-put ov 'face 'font-lock-comment-face)))
 
+;;; init.el ends here
