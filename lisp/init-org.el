@@ -60,5 +60,7 @@
            (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
            "* %?\n  %U\n  %a\n"))))
 
+(add-hook 'org-mode-hook #'visual-line-mode)
+
 (provide 'init-org)
 ;;; init-org.el ends here
