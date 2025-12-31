@@ -61,6 +61,7 @@
            "* %?\n  %U\n  %a\n"))))
 
 (add-hook 'org-mode-hook #'visual-line-mode)
+(add-hook 'org-capture-mode-hook #'delete-other-windows)
 
 (provide 'init-org)
 ;;; init-org.el ends here
