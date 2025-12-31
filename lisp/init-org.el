@@ -48,17 +48,36 @@
   ;; Capture templates
   ;; -------------------------
   (setq org-capture-templates
-        `(("t" "Todo" entry
-           (file+headline ,(expand-file-name "inbox.org" org-directory) "Tasks")
-           "* TODO %?\n  %U\n  %a\n")
+      `(("t" "Todo" entry
+         (file+headline ,(expand-file-name "inbox.org" org-directory) "Tasks")
+         "* TODO %?\n  %U\n  %a\n")
 
-          ("n" "Note" entry
-           (file+headline ,(expand-file-name "notes.org" org-directory) "Notes")
-           "* %?\n  %U\n  %a\n")
+        ("n" "Note" entry
+         (file+headline ,(expand-file-name "notes.org" org-directory) "Notes")
+         "* %?\n  %U\n  %a\n")
 
-          ("j" "Journal (daily)" entry
-           (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
-           "* %?\n  %U\n  %a\n"))))
+        ("j" "Journal (daily)" entry
+         (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
+         "* %?\n  %U\n  %a\n")
+
+        ("F" "Note → choose existing file" entry
+        (file
+          (lambda ()
+            (let* ((files (directory-files-recursively org-directory "\\.org$"))
+                  (choice (completing-read
+                            "Select note file: "
+                            (mapcar #'file-name-nondirectory files)
+                            nil t)))
+              (expand-file-name choice org-directory))))
+        "* %?\n  %U\n  %a\n")
+
+
+        ("N" "Note (new file)" entry
+         (file (lambda ()
+                 (expand-file-name
+                  (concat (read-string "Note filename: ") ".org")
+                  org-directory)))
+         "* %?\n  %U\n  %a\n"))))
 
 (add-hook 'org-mode-hook #'visual-line-mode)
 (add-hook 'org-capture-mode-hook #'delete-other-windows)
